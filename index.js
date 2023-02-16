@@ -116,6 +116,30 @@ class Clock {
     }
 
     checkAlarms = (time) => {
+        // Obtener la hora y el día actual
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentDay = now.toLocaleString('default', { weekday: 'short' });
+
+
+        // Comparar la hora y los días de la semana del objeto de alarma con la hora y el día actual
+        if (alarm.daysOfWeek.includes(currentDay) && currentHour === Number(alarm.hour)) {
+            alert(`¡Es hora de ${alarm.name}!`);
+        }
+
+
+
+        /*
+        let date = new Date;
+        let actualTime = date.toLocaleTimeString().split(":");
+        const options = { weekday: 'short'};
+        let actualDay = date.toLocaleDateString('en-EN', options) ;
+        let actualHour = actualTime[0];
+        let actualMinute = actualTime[1];
+        let actualSecond = actualTime[2];
+        
+        --------------------------------------
+        
         for (let i = 0; i < alarms.length; i++) {
             const alarm = this.toLocaleTimeString(alarms[i]);
             if (alarm === time) {
@@ -124,6 +148,7 @@ class Clock {
                 alert(`Alarm to ${alarm}`);
             }
         }
+        */
     }
 
     toLocaleTimeString = (date) => {
@@ -134,7 +159,6 @@ class Clock {
         const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
         return date.toLocaleDateString('en-EN', options);
     }
-
 
 }
 
