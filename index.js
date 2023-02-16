@@ -15,7 +15,7 @@ class Clock {
         const date = this.toLocaleDateString(new Date)
         clockEl.innerHTML = time;
         dateEl.innerHTML = date;
-        //this.checkAlarms(time);
+        this.checkAlarms();
     }
 
     clearForm = () => {
@@ -25,89 +25,107 @@ class Clock {
         }
 
         getElement("name").value = "";
-        getElement("hour").value = "";
-        getElement("minute").value = "";
-        getElement("second").value = "";
+        getElement("hour").value = "00";
+        getElement("minute").value = "00";
+        getElement("second").value = "00";
         getElement("name").focus();
     }
 
     addAlarm = () => {
         const name = getElement("name").value;
-        const hour = getElement("hour").value;
-        const minute = getElement("minute").value;
-        const second = getElement("second").value;
-        const daysOfWeek = this.getSelectedDaysOfWeek(); // Función que devuelve los días seleccionados en el HTML        
-        const alarm = { name, hour, minute, second, daysOfWeek };
+        const hour = parseInt(getElement("hour").value);
+        const minute = parseInt(getElement("minute").value);
+        const second = parseInt(getElement("second").value);
+        const daysOfWeek = this.getSelectedDaysOfWeek();
+
+        console.log("Selected days: " + daysOfWeek)
+
+        const randomNumber = Math.floor(Math.random() * 100000) + 1;
+        const alarm = { id: randomNumber, state: 1, name, hour, minute, second, daysOfWeek };
         alarms.push(alarm);
-        console.log(alarms)
         this.clearForm();
         this.displayAlarms();
-    }
-
-    /*
-    addAlarm = () => {
-        const name = getElement("name");
-        const date = new Date;
-        date.setHours(getElement("hour").value);
-        date.setMinutes(getElement("minute").value);
-        date.setSeconds(getElement("second").value);
-        alarms.push(date);
-
         console.log(alarms)
-
-        this.clearForm();
-        this.displayAlarms();
     }
-    */
 
     getSelectedDaysOfWeek = () => {
-        var checkboxes = document.querySelectorAll('input[type=checkbox]');
+        var checkboxes = document.querySelectorAll('input.form-check-input[type=checkbox]');
         var selectedDays = [];
         for (var i = 0; i < checkboxes.length; i++) {
+            console.log("Checks: "+ i + " = " + checkboxes[i].checked)
             if (checkboxes[i].checked) {
                 selectedDays.push(checkboxes[i].value);
             }
         }
-
-        console.log("Selected days: " + selectedDays);
+        //checkboxes = null;
+        //selectedDays = null;
         return selectedDays
     }
 
+    // Crear elementos de la tabla de forma dinamica
     renderAlarm = (alarm, alarmList) => {
-        //const li = createElement("li");
-        //li.innerHTML = `${alarm.name} - ${alarm.hour}:${alarm.minute}:${alarm.second} to ${alarm.daysOfWeek}`;
-        //alarmList.appendChild(li);
-
+        // Se crea la fila
         const tr = createElement("tr");
+        // Se crea la casilla ID "oculta"
+        const idTd = createElement("td");
+        idTd.textContent = alarm.id;
+        idTd.style.display = "none";
+        tr.appendChild(idTd);
+        // Se crea la casilla para el checkbox "visible"
+        const checkboxTd = createElement("td");
+        const checkbox = createElement("input");
+        checkbox.type = "checkbox";
+        // Si el estado es 1 entonces el checkbox aparecera activado
+        if (alarm.state == 1) {
+            checkbox.checked = true;
+        }
+        checkbox.id = `checkbox-${alarm.id}`;
+        checkbox.addEventListener("change", (event) => {
+            if (event.target.checked) {
+                // Checkbox activado, realizar acción                
+                // Buscamos el objeto en el array de alarmas
+                const alarmFound = alarms.find(alarm => alarm.id === alarm.id);
+                // Si encontramos el objeto, actualizamos el valor del atributo state
+                if (alarmFound) {
+                    alarmFound.state = 1;
+                }
+                console.log(`Checkbox activado para alarma ${alarm.id}`);
+                console.log(alarms)
+            } else {
+                // Checkbox desactivado, realizar acción                
+                // Buscamos el objeto en el array de alarmas
+                const alarmFound = alarms.find(alarm => alarm.id === alarm.id);
+                // Si encontramos el objeto, actualizamos el valor del atributo state
+                if (alarmFound) {
+                    alarmFound.state = 0;
+                }
+                console.log(`Checkbox desactivado para alarma ${alarm.id}`);
+                console.log(alarms)
+            }
+        });
+        checkboxTd.appendChild(checkbox);
+        tr.appendChild(checkboxTd);
+        // Se crea la casilla Name "visible"
         const nameTd = createElement("td");
         nameTd.textContent = alarm.name;
         tr.appendChild(nameTd);
-
+        // Se crea la casilla Hour "visible"
         const timeTd = createElement("td");
         timeTd.textContent = `${alarm.hour}:${alarm.minute}:${alarm.second}`;
         tr.appendChild(timeTd);
-
+        // Se crea la casilla Days "visible"
         const daysTd = createElement("td");
         daysTd.textContent = alarm.daysOfWeek.join(", ");
         tr.appendChild(daysTd);
 
-        alarmList.appendChild(tr);
 
+
+
+        // Se agregan todas las casillas a la fila
+        alarmList.appendChild(tr);
     }
-    /*
-    Primero, la función -sort- se utiliza para ordenar el arreglo alarms de menor a mayor. 
-    La función de comparación utilizada para ordenar simplemente resta el segundo elemento
-    del primero (d2 - d1), lo que ordena los números en orden ascendente.
-    Luego, el método -getElement- se utiliza para obtener una referencia al elemento -HTML- con 
-    el atributo id "alarm-list". 
-    Luego, la propiedad -innerHTML- se establece en una cadena vacía para borrar cualquier 
-    contenido previo del elemento.
-    Finalmente, se recorre el arreglo de alarmas y se utiliza la función -renderAlarm- para 
-    mostrar cada alarma en el elemento -HTML- especificado.
-    */
 
     displayAlarms = () => {
-        alarms.sort((d1, d2) => d1 - d2);
         const alarmList = getElement("alarmList")
         alarmList.innerHTML = "";
         for (let i = 0; i < alarms.length; i++) {
@@ -115,40 +133,22 @@ class Clock {
         }
     }
 
-    checkAlarms = (time) => {
-        // Obtener la hora y el día actual
+    checkAlarms = () => {
         const now = new Date();
         const currentHour = now.getHours();
-        const currentDay = now.toLocaleString('default', { weekday: 'short' });
-
-
-        // Comparar la hora y los días de la semana del objeto de alarma con la hora y el día actual
-        if (alarm.daysOfWeek.includes(currentDay) && currentHour === Number(alarm.hour)) {
-            alert(`¡Es hora de ${alarm.name}!`);
-        }
-
-
-
-        /*
-        let date = new Date;
-        let actualTime = date.toLocaleTimeString().split(":");
-        const options = { weekday: 'short'};
-        let actualDay = date.toLocaleDateString('en-EN', options) ;
-        let actualHour = actualTime[0];
-        let actualMinute = actualTime[1];
-        let actualSecond = actualTime[2];
-        
-        --------------------------------------
-        
+        const currentMinute = now.getMinutes();
+        const currentSecond = now.getSeconds();
+        const currentDay = now.toLocaleString('en-EN', { weekday: 'short' });
+        //console.log("H:" + currentHour + " M: " + currentMinute + " S: " + currentSecond + " D: " + currentDay);
         for (let i = 0; i < alarms.length; i++) {
-            const alarm = this.toLocaleTimeString(alarms[i]);
-            if (alarm === time) {
-                alarms.splice(i, 1);
-                this.displayAlarms();
-                alert(`Alarm to ${alarm}`);
+            if (alarms[i].state == 1) {
+                if (alarms[i].daysOfWeek.includes(currentDay)) {
+                    if (alarms[i].hour == currentHour && alarms[i].minute == currentMinute && alarms[i].second == currentSecond) {
+                        alert(`Alarm to: ${alarms[i].name}`);
+                    }
+                }
             }
         }
-        */
     }
 
     toLocaleTimeString = (date) => {
@@ -159,7 +159,6 @@ class Clock {
         const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
         return date.toLocaleDateString('en-EN', options);
     }
-
 }
 
 const clock = new Clock();

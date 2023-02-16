@@ -1,0 +1,68 @@
+{
+    "cells": [
+        {
+            "language": "markdown",
+            "source": [
+                "Obtener tiempo y dia en corto"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "class Reloj {\r\n    init() {\r\n        let date = new Date;\r\n        let actualTime = date.toLocaleTimeString().split(\":\");\r\n        const options = { weekday: 'short'};\r\n        let actualDay = date.toLocaleDateString('en-EN', options) ;\r\n        let actualHour = actualTime[0];\r\n        let actualMinute = actualTime[1];\r\n        let actualSecond = actualTime[2];\r\n        console.log(\"Dia: \" + actualDay + \" - Hora: \" + actualHour + \" - Min: \" + actualMinute + \" - Sec: \" + actualSecond)\r\n    }\r\n}\r\nconst reloj = new Reloj;\r\nreloj.init();"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.stdout",
+                            "value": [
+                                "Dia: Thu - Hora: 07 - Min: 29 - Sec: 41",
+                                "",
+                                ""
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "language": "markdown",
+            "source": [
+                "Insertar objeto en arreglo"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "const alarmas = [];\r\nconst names = \"nombre\";\r\nconst hour = \"hora\";\r\nconst minute = \"minutos\";\r\nconst second = \"segundos\";\r\nconst daysOfWeek = \"Mon, Tue, Wed\";\r\nconst randomNumber = Math.floor(Math.random() * 100000) + 1;\r\nconst alarm = {id: randomNumber, state: 1, names, hour, minute, second, daysOfWeek };\r\nalarmas.push(alarm);\r\nconsole.log(alarmas)"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.stdout",
+                            "value": [
+                                "[",
+                                "  {",
+                                "    id: 50236,",
+                                "    state: 1,",
+                                "    names: 'nombre',",
+                                "    hour: 'hora',",
+                                "    minute: 'minutos',",
+                                "    second: 'segundos',",
+                                "    daysOfWeek: 'Mon, Tue, Wed'",
+                                "  }",
+                                "]",
+                                "",
+                                ""
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
