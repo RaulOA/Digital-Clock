@@ -1,3 +1,11 @@
 .h3 {
     font-size: 1em;
 }
+
+.alert {
+    background-color: yellow;
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  

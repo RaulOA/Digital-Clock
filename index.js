@@ -140,8 +140,10 @@ class Clock {
             const alarmIndex = alarms.findIndex(alarm => alarm.id === alarm.id);
             alarms.splice(alarmIndex, 1);
             this.displayAlarms();
-            alert(`Alarm ${alarm.name} Deleted`);
+            alert(`The alarm ${alarm.name} has been deleted`);
+              
         });
+
         deleteButtonTd.appendChild(deleteButton)
         tr.appendChild(deleteButtonTd);
 
@@ -152,14 +154,31 @@ class Clock {
         modifyButton.className = "btn btn-warning";
         modifyButton.textContent = "Modify";
         modifyButton.addEventListener("click", () => {
-            // Buscamos el indice del objeto en el array de alarmas y lo modificamos
+
+          // Buscamos el indice del objeto en el array de alarmas y lo modificamos
             const alarmIndex = alarms.findIndex(alarm => alarm.id === alarm.id);
-
-
-
+            const alarm = alarms[alarmIndex];
+              
+            // Pedimos al usuario que ingrese el nuevo nombre y hora de la alarma
+            const newName = prompt("Enter the new name for the alarm:", alarm.name);
+            const newTime = prompt("Enter the new time in format 'hh:mm:ss':", alarm.time);
+            
+            //Separamos la cadena en horas, minutos y segundos
+            const [newHour, newMinute, newSecond] = newTime.split(':');
+            
+            // Actualizar las propiedades de la alarma con los nuevos valores
+            alarm.name = newName;
+            alarm.hour = newHour.toString().padStart(2, '0');
+            alarm.minute = newMinute.toString().padStart(2, '0');
+            alarm.second = newSecond.toString().padStart(2, '0');
+            
+            // Actualizamos la tabla de alarmas en la página
             this.displayAlarms();
-            alert(`Alarm ${alarm.name} Modified`);
+            
+            alert(`The alarm ${alarm.name} has been modified`);
+  
         });
+
         modifyButtonTd.appendChild(modifyButton)
         tr.appendChild(modifyButtonTd);
 
@@ -190,7 +209,7 @@ class Clock {
             if (alarms[i].state == 1) {
                 if (alarms[i].daysOfWeek.includes(currentDay)) {
                     if (alarms[i].hour == currentHour && alarms[i].minute == currentMinute && alarms[i].second == currentSecond) {
-                        alert(`Alarm to: ${alarms[i].name}`);
+                        alert(`The time marked on the alarm: ${alarms[i].name} has arrived`);
                     }
                 }
             }
